@@ -1,8 +1,6 @@
 <template>
   <div class="form">
-    <!-- 44.绑定closed  -->
     <el-dialog :title="info.isadd?'添加分类':'编辑分类'" :visible.sync="info.isshow" @closed="cancel">
-      <!-- 14.数据绑定到页面 -->
      
       <el-form :model="user">
         <el-form-item label="上级分类" label-width="100px">
@@ -19,15 +17,6 @@
         </el-form-item>
 
         <el-form-item label="图片" label-width="100px" v-if="user.pid!==0">
-          <!-- 一、原生js的上传文件 -->
-          <!-- <div class="my-upload">
-            <div class="add">+</div>
-            <img v-if="imgUrl" class="img" :src="imgUrl" alt />
-            <input v-if="info.isshow" type="file" class="ipt" @change="changeImg" />
-          </div>-->
-
-          <!-- 二、element-ui上传文件 -->
-
           <el-upload
             class="avatar-uploader"
             action="#"
@@ -58,7 +47,6 @@ import { reqcateAdd, reqcateDetail, reqcateUpdate } from "../../../utils/http";
 import { successalert, erroralert } from "../../../utils/alert";
 import {mapActions,mapGetters} from "vuex"
 export default {
-  // 4.接收info
   props: ["info", ],
   computed:{
     ...mapGetters({
@@ -67,9 +55,7 @@ export default {
   },
   data() {
     return {
-      //图片地址
       imgUrl: "",
-      //3.初始化user
       user: {
         pid: "",
         catename: "",
@@ -83,36 +69,24 @@ export default {
     ...mapActions({
       "reqList":"cate/reqList"
     }),
-    //js 上传文件
     changeImg(e) {
       let file = e.target.files[0];
-
-      //文件大小验证 1M=1024KB 1KB=1024B
       if (file.size > 2 * 1024 * 1024) {
         erroralert("文件大小不能超过2M");
         return;
       }
-
-      //后缀名
-      //   let extname=file.name.slice(file.name.lastIndexOf("."));
       let extname = path.extname(file.name);
       let arr = [".png", ".gif", ".jpg", ".jpeg"];
       if (!arr.some(item => item === extname)) {
         erroralert("请上传图片");
         return;
       }
-
-      // 将文件生成一个url地址
       this.imgUrl = URL.createObjectURL(file);
-
-      //赋值给user.img
       this.user.img = file;
     },
-
-    //ui上传文件
     changeImg2(e){
         let file=e.raw;
-        //判断
+        
         this.imgUrl=URL.createObjectURL(file)
         this.user.img=file;
     },

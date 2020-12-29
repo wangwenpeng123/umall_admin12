@@ -4,15 +4,11 @@ import Vue from "vue"
 import { erroralert } from "./alert"
 import store from "../store"
 import router from "../router"
-//开发环境使用 8080
+
 let baseUrl = "/api"
 Vue.prototype.$pre = "http://localhost:3000"
 
-//生产环境使用 打包
-// let baseUrl=""
-// Vue.prototype.$pre=""
 
-//请求拦截:设置请求头
 axios.interceptors.request.use(config=>{
     if(config.url!==baseUrl+"/api/userlogin"){
         config.headers.authorization=store.state.userInfo.token
@@ -20,22 +16,19 @@ axios.interceptors.request.use(config=>{
     return config
 })
 
-//响应拦截
 axios.interceptors.response.use(res => {
 
-    //18.统一处理失败
+     
     if (res.data.code !== 200) {
         erroralert(res.data.msg)
     }
-    //统一处理list是null的情况
     if (!res.data.list) {
         res.data.list = []
     }
-    //掉线处理
     if(res.data.msg==="登录已过期或访问权限受限"){
-        //清除用户登录的信息 userInfo
+     
         store.dispatch("changeUser",{})
-        //跳到登录页面
+
         router.push("/login")
     }
 
@@ -45,7 +38,6 @@ axios.interceptors.response.use(res => {
     return res
 })
 
-// post 带有文件，参数转换
 function dataToFormData(user) {
     let data = new FormData()
     for (let i in user) {
@@ -54,7 +46,6 @@ function dataToFormData(user) {
     return data
 }
 
-//登录
 export let reqLogin = (user) => {
     return axios({
         url: baseUrl + "/api/userlogin",
@@ -64,7 +55,6 @@ export let reqLogin = (user) => {
 }
 
 /************菜单管理 start**************************/
-//7.添加
 export const reqMenuAdd = (user) => {
     return axios({
         url: baseUrl + "/api/menuadd",
@@ -73,8 +63,6 @@ export const reqMenuAdd = (user) => {
     })
 }
 
-
-//19.列表
 export let reqMenulist = () => {
     return axios({
         url: baseUrl + "/api/menulist",
@@ -84,7 +72,6 @@ export let reqMenulist = () => {
     })
 }
 
-//30.删除
 export let reqMenuDel = (obj) => {
     return axios({
         url: baseUrl + "/api/menudelete",
@@ -93,7 +80,6 @@ export let reqMenuDel = (obj) => {
     })
 }
 
-//38.一条数据
 export let reqMenuDetail = (obj) => {
     return axios({
         url: baseUrl + "/api/menuinfo",
@@ -101,7 +87,6 @@ export let reqMenuDetail = (obj) => {
     })
 }
 
-//39.修改接口
 export let reqMenuUpdate = (user) => {
     return axios({
         url: baseUrl + "/api/menuedit",
@@ -109,10 +94,8 @@ export let reqMenuUpdate = (user) => {
         data: qs.stringify(user)
     })
 }
-/************菜单管理 end**************************/
-/************角色管理 start**************************/
 
-//添加
+
 export let reqRoleAdd = (user) => {
     return axios({
         url: baseUrl + "/api/roleadd",
@@ -121,14 +104,13 @@ export let reqRoleAdd = (user) => {
     })
 }
 
-//列表
+
 export let reqRolelist = () => {
     return axios({
         url: baseUrl + "/api/rolelist",
     })
 }
 
-//详情 user={id:1}
 export let reqRoleDetail = (user) => {
     return axios({
         url: baseUrl + "/api/roleinfo",
@@ -137,7 +119,7 @@ export let reqRoleDetail = (user) => {
     })
 }
 
-//修改 user={id:"必填"}
+
 export let reqRoleUpdate = (user) => {
     return axios({
         url: baseUrl + "/api/roleedit",
@@ -146,7 +128,6 @@ export let reqRoleUpdate = (user) => {
     })
 }
 
-//删除 user={id:1}
 export let reqRoleDel = (user) => {
     return axios({
         url: baseUrl + "/api/roledelete",
@@ -157,11 +138,6 @@ export let reqRoleDel = (user) => {
 
 
 
-/************角色管理 end**************************/
-
-/************管理管理 start**************************/
-
-//添加
 export let reqManageAdd = (user) => {
     return axios({
         url: baseUrl + "/api/useradd",
@@ -170,7 +146,6 @@ export let reqManageAdd = (user) => {
     })
 }
 
-//列表 obj={page:1,size:50}
 export let reqManagelist = (obj) => {
     return axios({
         url: baseUrl + "/api/userlist",
@@ -179,7 +154,6 @@ export let reqManagelist = (obj) => {
     })
 }
 
-//详情 user={uid:123342}
 export let reqManageDetail = (user) => {
     return axios({
         url: baseUrl + "/api/userinfo",
@@ -188,7 +162,6 @@ export let reqManageDetail = (user) => {
     })
 }
 
-//修改 user={uid:"必填"}
 export let reqManageUpdate = (user) => {
     return axios({
         url: baseUrl + "/api/useredit",
@@ -197,7 +170,6 @@ export let reqManageUpdate = (user) => {
     })
 }
 
-//删除 user={uid:13432}
 export let reqManageDel = (user) => {
     return axios({
         url: baseUrl + "/api/userdelete",
@@ -205,30 +177,14 @@ export let reqManageDel = (user) => {
         data: qs.stringify(user)
     })
 }
-//总数
+
 export let reqManageCount = () => {
     return axios({
         url: baseUrl + "/api/usercount"
     })
 }
 
-/************管理员管理 end**************************/
-
-/************商品分类管理 start**************************/
-
-//添加 user={img:File,catename:"12",pid:1}
 export let reqcateAdd = (user) => {
-    /*
-    let data=new FormData()
-    data.append("img",file)
-    data.append("catename","123")
-    data.append("pid",1)
-    */
-    /*
-    let data=new FormData()
-    for(let i in user){
-        data.append(i,user[i])
-    }*/
 
     return axios({
         url: baseUrl + "/api/cateadd",
@@ -237,7 +193,6 @@ export let reqcateAdd = (user) => {
     })
 }
 
-//列表 p={istree:true} {pid:1}
 export let reqcatelist = (p) => {
     return axios({
         url: baseUrl + "/api/catelist",
@@ -245,7 +200,6 @@ export let reqcatelist = (p) => {
     })
 }
 
-//详情 user={id:1}
 export let reqcateDetail = (user) => {
     return axios({
         url: baseUrl + "/api/cateinfo",
@@ -254,7 +208,6 @@ export let reqcateDetail = (user) => {
     })
 }
 
-//修改 user={id:"必填",img:file,catename:""}
 export let reqcateUpdate = (user) => {
     return axios({
         url: baseUrl + "/api/cateedit",
@@ -262,8 +215,6 @@ export let reqcateUpdate = (user) => {
         data: dataToFormData(user)
     })
 }
-
-//删除 user={id:1}
 export let reqcateDel = (user) => {
     return axios({
         url: baseUrl + "/api/catedelete",
@@ -272,13 +223,6 @@ export let reqcateDel = (user) => {
     })
 }
 
-
-
-/************商品分类管理 end**************************/
-
-/************商品规格管理 start**************************/
-
-//添加 user={}
 export let reqspecsAdd = (user) => {
 
     return axios({
@@ -288,7 +232,7 @@ export let reqspecsAdd = (user) => {
     })
 }
 
-//列表 p={page:1,size:500}
+
 export let reqspecslist = (p) => {
     return axios({
         url: baseUrl + "/api/specslist",
@@ -296,7 +240,6 @@ export let reqspecslist = (p) => {
     })
 }
 
-//详情 user={id:1}
 export let reqspecsDetail = (user) => {
     return axios({
         url: baseUrl + "/api/specsinfo",
@@ -305,7 +248,6 @@ export let reqspecsDetail = (user) => {
     })
 }
 
-//修改 user={id:"必填",img:file,specsname:""}
 export let reqspecsUpdate = (user) => {
     return axios({
         url: baseUrl + "/api/specsedit",
@@ -314,7 +256,6 @@ export let reqspecsUpdate = (user) => {
     })
 }
 
-//删除 user={id:1}
 export let reqspecsDel = (user) => {
     return axios({
         url: baseUrl + "/api/specsdelete",
@@ -323,19 +264,12 @@ export let reqspecsDel = (user) => {
     })
 }
 
-//总数
 export let reqspecsCount = () => {
     return axios({
         url: baseUrl + "/api/specscount"
     })
 }
 
-/************商品规格管理 end**************************/
-
-
-/************商品管理 start**************************/
-
-//添加 user={}
 export let reqgoodsAdd = (user) => {
 
     return axios({
@@ -345,7 +279,6 @@ export let reqgoodsAdd = (user) => {
     })
 }
 
-//列表 p={page:1,size:500}
 export let reqgoodslist = (p) => {
     return axios({
         url: baseUrl + "/api/goodslist",
@@ -353,7 +286,6 @@ export let reqgoodslist = (p) => {
     })
 }
 
-//详情 user={id:1}
 export let reqgoodsDetail = (user) => {
     return axios({
         url: baseUrl + "/api/goodsinfo",
@@ -362,7 +294,6 @@ export let reqgoodsDetail = (user) => {
     })
 }
 
-//修改 user={id:"必填",img:file,goodsname:""}
 export let reqgoodsUpdate = (user) => {
     return axios({
         url: baseUrl + "/api/goodsedit",
@@ -371,7 +302,6 @@ export let reqgoodsUpdate = (user) => {
     })
 }
 
-//删除 user={id:1}
 export let reqgoodsDel = (user) => {
     return axios({
         url: baseUrl + "/api/goodsdelete",
@@ -380,11 +310,9 @@ export let reqgoodsDel = (user) => {
     })
 }
 
-//总数
+
 export let reqgoodsCount = () => {
     return axios({
         url: baseUrl + "/api/goodscount"
     })
 }
-
-/************商品管理 end**************************/
